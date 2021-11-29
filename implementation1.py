@@ -21,7 +21,7 @@ def direct_solve(N,h,epsilon):
     x = np.linspace(0,1,N+1)
     return x, u
 
-
+# # table of errors
 # epsilon = 0.5
 # print("epsilon", "N", "error", sep = '\t')
 # for epsilon in [0.5, 0.1, 0.01]:
@@ -39,7 +39,7 @@ _, u_2 = direct_solve(N//2,2*h,epsilon)
 _, u_4 = direct_solve(N//4,4*h,epsilon)
 i=N//2
 p = np.log2((u_2[i//2]-u_4[i//4])/(u_1[i]-u_2[i//2]))
-print(p)
+print("order p of accuracy of solution:", p)
 
 # x_ref = np.linspace(0,1,50)
 # u_ref = (np.exp(x_ref/epsilon) - np.exp(1/epsilon))/(1 - np.exp(1/epsilon))
