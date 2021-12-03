@@ -21,3 +21,6 @@ plt.plot(X_ref.T, U_ref.T, label="Numerical Solution")
 plt.legend()
 
 plt.show()
+
+# TA vragen:
+# - Moeten we eerst h variëren en daarna epsilon?
