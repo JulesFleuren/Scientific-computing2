@@ -22,6 +22,10 @@ def A_matrix(N,h,epsilon):
     A[-1,-2] = 0
     return A
 
+def f_N(N):
+    f = np.zeros(N+1)
+    f[0] = 1
+    return f
 
 def u_ex(x, epsilon):
     return (np.exp(x/epsilon) - np.exp(1/epsilon))/(1 - np.exp(1/epsilon))
