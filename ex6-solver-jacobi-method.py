@@ -4,70 +4,15 @@ from matplotlib import pyplot as plt
 
 from main import A_matrix, f_N
 
-# def jacobi_method(A, f, N, TOL):
-#     """
-#     Solves the linear system Au = f using the Jacobi method.
-#     """
-#     # Initialize the solution vector. Guess u0 to be the constant vector equal to zero.
-#     u = [0] * (N + 1)
-#     # Initialize the residual vector.
-#     r = [0]
-#     # Initialize the error.
-#     error = np.linalg.norm(f)
-#     # Initialize the iteration counter.
-#     k = 0
-#     # Iterate until the error is less than the tolerance.
-#     while error > TOL:
-#         # Update the iteration counter.
-#         k += 1
-#         for i in range(N):
-#             # Update the solution vector.
-#             u[i] = (f[i] - sum(A[i][j] * u[j] for j in range(N))) / A[i][i]
-#             # Update the residual vector.
-#         r.append(f - A*u)
-#         # Update the error (Scaled residuals).
-#         error = np.linalg.norm(r[k])/np.linalg.norm(f)
-#         print(k, error, np.linalg.norm(r[k]), np.linalg.norm(f))
-#         error = 10*TOL/k
-#     # Return the solution vector, the residual vector and the number of iterations.
-#     return u, r, k
-
-# def jacobi_iteration_method(A, f, N, TOL): # A is the matrix, f is the vector, N is the number of iterations, TOL is the tolerance
-#     x = np.linspace(0,1,N+1)
-#     u = np.zeros(N+1)
-#     # u[0] = 1
-#     u_new = np.zeros(N+1)
-#     # u_new[0] = 1
-#     r = []
-#     k = 0
-#     error = np.linalg.norm(f)
-#     while error > TOL:
-#         u = u_new
-#         for i in range(1,N):
-#             u_new[i] = (f[i] - sum(A[i][j] * u[j] for j in range(N)) - A[i][i]*u[i]) / A[i][i]
-#             # u_new[i] = (1/A[i,i])*(f[i] - A[i,i-1]*u[i-1] - A[i,i+1]*u[i+1])
-#         r.append(f - A*u_new)
-#         error = np.linalg.norm(r[k])/np.linalg.norm(f)
-#         print(k, np.linalg.norm(r[k]), error)
-#         k += 1
-#         error = 10*TOL/k
-#     return x, u_new
-
-def jacobi_iteration_method(A, f, N, TOL):
-    u = np.zeros(N+1)
-    
-    # error = np.linalg.norm(f)
+def jacobi_iteration_method(A, f, TOL):
+    u = np.zeros(len(f))
 
     k = 0
     sr = []
     res = 2*TOL
-    c = 0 # Number of iterations before convergence
     while res > TOL:
-        z = u
-        for i in range(0,N):
-            z[i] = u[i] + (f[i] - sum(A[i][j] * u[j] for j in range(N))) / A[i][i]
+        u = u + (f - np.matmul(A, u))/np.diag(A)
 
-        u = z
         res = np.linalg.norm(f - np.matmul(A, u))/np.linalg.norm(f)
         sr.append(res)
         k += 1
@@ -78,9 +23,10 @@ def plot_scaled_residual(A, f, N, TOL):
     Plots the scaled residual for the Jacobi method.
     """
     # Solve the linear system.
-    u, rs, k = jacobi_iteration_method(A, f, N, TOL)
+    u, rs, k = jacobi_iteration_method(A, f, TOL)
 
     # Plot the scaled residual.
+    plt.figure()
     plt.plot(range(k), rs)
     plt.title(f"Plot of the scaled residual for the Jacobi method for N  = {N}.")
     plt.xlabel('Iteration')
@@ -102,3 +48,6 @@ for k in range(len(Ns)):
     red[k] = redk
 
 print(red)
+
+# Plot into 1 image
+# Vary epsilon
