@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from main import A_matrix, f_N
 
 def single_step_Gauss_seidel(A,f,u):
-    for i in range(len(f))
+    for i in range(len(f)):
         u[i] = u[i] + (f[i] - np.sum(A[i,:]*u))/A[i,i]
     return u
 
@@ -16,7 +16,9 @@ def Gauss_seidel_iteration_method(A, f, TOL):
     sr = []
     res = 2*TOL
     while res > TOL:
-        u = single_step_Gauss_seidel(A,f,u)
+        # u = single_step_Gauss_seidel(A,f,u)
+        for i in range(len(f)):
+            u[i] = u[i] + (f[i] - np.sum(A[i,:]*u))/A[i,i]
 
         res = np.linalg.norm(f - np.matmul(A, u))/np.linalg.norm(f)
         sr.append(res)
