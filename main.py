@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def direct_solve(N,h,epsilon = 1):
     A = A_matrix(N,h,epsilon)
@@ -29,3 +30,23 @@ def f_N(N):
 
 def u_ex(x, epsilon):
     return (np.exp(x/epsilon) - np.exp(1/epsilon))/(1 - np.exp(1/epsilon))
+
+def plot_scaled_residual(A, f, N, TOL, iter_method):
+    """
+    Plots the scaled residual for the given iteration method.
+    """
+    # Solve the linear system.
+    u, rs, k = iter_method(A, f, TOL)
+
+    # Plot the scaled residual.
+    plt.figure()
+    plt.plot(range(k), rs)
+    plt.title(f"Plot of the scaled residual for the {iter_method.__name__} for N  = {N}.")
+    plt.xlabel('Iteration')
+    plt.ylabel('Scaled Residual')
+    plt.yscale('log')
+    plt.show()
+
+    # Calculate the last 5 reduction factors.
+    redf = [rs[-i]/rs[-i-1] for i in range(1,6)]
+    return redf
