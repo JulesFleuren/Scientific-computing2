@@ -12,7 +12,15 @@ Cython.Compiler.Options.annotate = True       # uncomment voor html file
 import numpy
 
 setup(name='mine', description='Nothing',
-      ext_modules=[Extension('ex7_solver_gauss_seidel_method_cython', ['ex7_solver_gauss_seidel_method_cython.pyx'],
+      ext_modules=[
+            
+                  Extension('ex6_solver_jacobi_method_cython', ['ex6_solver_jacobi_method_cython.pyx'],
+                  include_dirs=[numpy.get_include()]
+                  ),
+                  Extension('ex7_solver_gauss_seidel_method_cython', ['ex7_solver_gauss_seidel_method_cython.pyx'],
+                  include_dirs=[numpy.get_include()]
+                  ),
+                  Extension('ex8_solver_backward_gauss_seidel_method_cython', ['ex8_solver_backward_gauss_seidel_method_cython.pyx'],
                   include_dirs=[numpy.get_include()]
                   )],
       cmdclass = {'build_ext':build_ext, 'language_level':3})
