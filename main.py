@@ -1,7 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import ex7_solver_gauss_seidel_method_cython as gs_cy
+from time import time
+
+import ex6_solver_jacobi_method as jac
+import ex7_solver_gauss_seidel_method_cython as gs
+import ex8_solver_backward_gauss_seidel_method_cython as bgs
 from timeit import timeit
 
 def direct_solve(N,h,epsilon = 1):
@@ -55,5 +59,30 @@ def plot_scaled_residual(A, f, N, TOL, iter_method):
     return redf
 
 if __name__ == "__main__":
-    pass
-    # print(gs_cy.gauss_seidel_iteration_method(np.array([[1.0, 2.0],[3.0,4.0]]), np.array([5.0,6.0]), 7))
+    N = 2**8
+    h = 1/N
+    epsilon = 0.1
+
+    A = A_matrix(N, h, epsilon)
+    f = f_N(N)
+    TOL = 1e-6
+    time0 = time()
+    u1, _, k1 = jac.jacobi_iteration_method(A,f,TOL)
+    time1 = time()
+    u2, _, k2 = gs.gauss_seidel_iteration_method(A,f,TOL)
+    time2 = time()
+    u3, _, k3 = bgs.backward_gauss_seidel_iteration_method(A,f,TOL)
+    time3 = time()
+
+    x = np.linspace(0,1,N+1)
+    u_ref = u_ex(x, epsilon)
+
+    print(k1, k2)
+
+    plt.plot(x, u1, label=f"Jacobi ({k1} iterations, {time1-time0:.2f}s)")
+    plt.plot(x, u2, label=f"forward Gauss-Seidel ({k2} iterations, {time2-time1:.2f}s)")
+    plt.plot(x, u3, label=f"backward Gauss-Seidel ({k3} iterations, {time3-time2:.2f}s)")
+    plt.plot(x, u_ref, label="reference solution")
+
+    plt.legend()
+    plt.show()
