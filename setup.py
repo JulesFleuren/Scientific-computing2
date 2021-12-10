@@ -13,5 +13,6 @@ import numpy
 
 setup(name='mine', description='Nothing',
       ext_modules=[Extension('ex7_solver_gauss_seidel_method_cython', ['ex7_solver_gauss_seidel_method_cython.pyx'],
-                             include_dirs=[numpy.get_include()])],
-      cmdclass = {'build_ext':build_ext})
+                  include_dirs=[numpy.get_include()]
+                  )],
+      cmdclass = {'build_ext':build_ext, 'language_level':3})
