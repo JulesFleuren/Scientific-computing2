@@ -8,6 +8,6 @@ epsilon = 0.5
 w, v = np.linalg.eig(A_matrix(N,h,epsilon))
 print(w)
 
-plt.scatter(np.arange(len(w)), np.sort(w))
+plt.scatter(np.arange(len(w)), np.sort(w)[::-1])
 
 plt.show()
