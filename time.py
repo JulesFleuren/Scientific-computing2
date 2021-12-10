@@ -21,15 +21,13 @@ f = f_N(N)
 TOL = 1e-6
 """
 
-<<<<<<< Updated upstream
 ctime = timeit(stmt="gs_cy.gauss_seidel_iteration_method(A,f,TOL)", setup=setup1, number =13)
+print(ctime)
+# ctime2 = timeit(stmt="bgs_cy.backward_gauss_seidel_iteration_method(A,f,TOL)", setup=setup1, number =10)
+# print("cython done")
 ptime = timeit(stmt="gs_py.gauss_seidel_iteration_method(A,f,TOL)", setup=setup1, number =13)
-=======
-ctime = timeit(stmt="gs_cy.gauss_seidel_iteration_method(A,f,TOL)", setup=setup1, number =10)
-ctime2 = timeit(stmt="bgs_cy.backward_gauss_seidel_iteration_method(A,f,TOL)", setup=setup1, number =10)
-print("cython done")
-ptime = timeit(stmt="gs_py.gauss_seidel_iteration_method(A,f,TOL)", setup=setup1, number =10)
->>>>>>> Stashed changes
 
-print(ctime, ctime2, ptime)
-print(ctime/ctime2, ptime/ctime)
+# print(ctime, ctime2, ptime)
+# print(ctime/ctime2, ptime/ctime)
+
+print(ctime, ptime, ptime/ctime)
