@@ -6,32 +6,26 @@ DTYPE = np.float64
 
 ctypedef np.float64_t DTYPE_t
 
-
-
 cimport cython
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing
-
 
 cdef double norm(np.ndarray[DTYPE_t, ndim=1] x):
     cdef int i
     cdef DTYPE_t s = 0
     for i in range(len(x)):
-        s += x[i]**2
+        s += x[i]*x[i]
     return np.sqrt(s)
 
-def gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYPE_t, ndim=1] f, double TOL):
-
-    cdef extern from "math.h":
-        double sqrt(double x)
-
+def gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYPE_t, ndim=1] f, const double TOL):
     cdef int len_f = f.shape[0]
 
     assert A.shape[0] == len_f
     assert A.shape[1] == len_f
 
-    cpdef np.ndarray[DTYPE_t, ndim=1] u = np.zeros(len_f, dtype=DTYPE)
-    cpdef np.ndarray[DTYPE_t, ndim=1] v = np.zeros(len_f, dtype=DTYPE)
+    cdef np.ndarray[DTYPE_t, ndim=1] u = np.zeros(len_f, dtype=DTYPE)
+    cdef DTYPE_t v = 0
+    cdef DTYPE_t norm_r_squared = 0
     
     cdef int i
     cdef int j
@@ -41,7 +35,6 @@ def gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYP
     cdef double norm_f = norm(f)
     cdef double res = 2*TOL
 
-    
     while res > TOL:
 
         for i in range(len_f):
@@ -51,14 +44,16 @@ def gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYP
                 s -= A[i,j] * u[j]
             u[i] += s/A[i,i]
 
-        # res = np.linalg.norm(f - np.matmul(A, u))/np.linalg.norm(f)
-        res = 0
+        # np.linalg.norm(f - np.matmul(A, u))/np.linalg.norm(f)
+        #res = norm(f - np.matmul(A, u))/norm_f
+        norm_r_squared = 0
         for i in range(len_f):
-            v[i] = f[i]
+            v = f[i]
             for j in range(len_f):
-                v[i] -= A[i,j]*u[j]
+                v -= A[i,j]*u[j]
+            norm_r_squared += v*v
             
-        res = norm(v)/norm_f
+        res = np.sqrt(norm_r_squared)/norm_f
 
         sr.append(res)
     
