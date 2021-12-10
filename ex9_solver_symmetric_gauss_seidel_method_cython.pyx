@@ -10,7 +10,7 @@ cimport cython
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing
 
-def backward_gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYPE_t, ndim=1] f, double TOL):
+def symmetric_gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYPE_t, ndim=1] f, double TOL):
 
     cdef int len_f = f.shape[0]
 
@@ -29,7 +29,16 @@ def backward_gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.nda
 
     cdef double res = 2*TOL
     while res > TOL:
+        
+        # weet niet helemaal zeker of ze dit bedoelen met symmetric Gauss-Seidel
+        # forward step
+        for i in range(len_f):
+            s = 0
+            for j in range(len_f):
+                s += A[i,j] * u[j]
+            u[i] = u[i] + (f[i] - s)/A[i,i]
 
+        # backward step
         for i in range(len_f-1, -1, -1): # loop backwards
             s = 0
             for j in range(len_f):

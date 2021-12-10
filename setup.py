@@ -8,7 +8,7 @@ from Cython.Distutils import build_ext
 from distutils.extension import Extension
 from distutils.core import setup
 import Cython.Compiler.Options
-# Cython.Compiler.Options.annotate = True       # uncomment voor html file
+Cython.Compiler.Options.annotate = True       # uncomment voor html file
 import numpy
 
 setup(name='mine', description='Nothing',
