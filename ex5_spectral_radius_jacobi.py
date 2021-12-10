@@ -4,8 +4,8 @@ from main import *
 
 def jacobi_eigenvalues(N, h, epsilon):
     A = A_matrix(N,h,epsilon)
-    D = np.diag(A)
-    Bjac = np.identity(N+1) - np.matmul(A, 1/D)
+    Dinv  = np.diag(1/np.diag(A))
+    Bjac = np.identity(N+1) - np.matmul(Dinv, A)
     w, v = np.linalg.eig(Bjac)
     return w
 
