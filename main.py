@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+import ex7_solver_gauss_seidel_method_cython as gs_cy
+from timeit import timeit
+
 def direct_solve(N,h,epsilon = 1):
     A = A_matrix(N,h,epsilon)
 
@@ -50,3 +53,7 @@ def plot_scaled_residual(A, f, N, TOL, iter_method):
     # Calculate the last 5 reduction factors.
     redf = [rs[-i]/rs[-i-1] for i in range(1,6)]
     return redf
+
+if __name__ == "__main__":
+    pass
+    # print(gs_cy.gauss_seidel_iteration_method(np.array([[1.0, 2.0],[3.0,4.0]]), np.array([5.0,6.0]), 7))

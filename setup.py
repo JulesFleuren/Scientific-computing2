@@ -1,11 +1,14 @@
 # https://www.youtube.com/watch?v=mXuEoqK4bEc
 # https://cython.readthedocs.io/en/latest/src/quickstart/build.html
 # https://numpy.org/doc/stable/user/c-info.python-as-glue.html#cython
+
+# python setup.py build_ext --inplace
+
 from Cython.Distutils import build_ext
 from distutils.extension import Extension
 from distutils.core import setup
 import Cython.Compiler.Options
-Cython.Compiler.Options.annotate = True
+# Cython.Compiler.Options.annotate = True       # uncomment voor html file
 import numpy
 
 setup(name='mine', description='Nothing',
