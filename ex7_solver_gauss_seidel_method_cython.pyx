@@ -10,6 +10,14 @@ cimport cython
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing
 
+
+cdef double norm(np.ndarray[DTYPE_t, ndim=1] x):
+    cdef int i
+    cdef DTYPE_t s = 0
+    for i in range(len(x)):
+        s += x[i]**2
+    return np.sqrt(s)
+
 def gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYPE_t, ndim=1] f, double TOL):
 
     cdef int len_f = f.shape[0]
@@ -17,27 +25,29 @@ def gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYP
     assert A.shape[0] == len_f
     assert A.shape[1] == len_f
 
-    cpdef np.ndarray[DTYPE_t, ndim=1] u = np.zeros(len_f, dtype=DTYPE)
+    cdef np.ndarray[DTYPE_t, ndim=1] u = np.zeros(len_f, dtype=DTYPE)
     
-
-    cdef int k = 0
     cdef int i
     cdef int j
     cdef DTYPE_t s
 
-    sr = []
+    cdef list sr = []
 
+    cdef double normf = norm(f)
+    cdef double TOL_f = TOL*normf
     cdef double res = 2*TOL
-    while res > TOL:
+
+    
+    while res > TOL_f:
 
         for i in range(len_f):
             # u[i] = u[i] + (f[i] - np.sum(A[i,:]*u))/A[i,i]
-            s = 0
+            s = f[i]
             for j in range(len_f):
-                s += A[i,j] * u[j]
-            u[i] = u[i] + (f[i] - s)/A[i,i]
+                s -= A[i,j] * u[j]
+            u[i] += s/A[i,i]
 
-        res = np.linalg.norm(f - np.matmul(A, u))/np.linalg.norm(f)
+        res = norm(f - np.matmul(A, u))
         sr.append(res)
-        k += 1
-    return u, sr, k
+    
+    return u, sr, len(sr)
