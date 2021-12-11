@@ -3,3 +3,5 @@ build/
 *cython.c
 *darwin.so
 *cython.html
+*amd64.pyd
+.vscode/
