@@ -24,8 +24,8 @@ def gauss_seidel_iteration_method(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYP
     assert A.shape[1] == len_f
 
     cdef np.ndarray[DTYPE_t, ndim=1] u = np.zeros(len_f, dtype=DTYPE)
-    cdef DTYPE_t v = 0
-    cdef DTYPE_t norm_r_squared = 0
+    cdef DTYPE_t v
+    cdef DTYPE_t norm_r_squared
     
     cdef int i
     cdef int j

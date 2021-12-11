@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from time import time
 
-import ex6_solver_jacobi_method as jac
+import ex6_solver_jacobi_method_cython as jac
 import ex7_solver_gauss_seidel_method_cython as gs
 import ex8_solver_backward_gauss_seidel_method_cython as bgs
 import ex9_solver_symmetric_gauss_seidel_method_cython as sgs
