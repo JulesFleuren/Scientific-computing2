@@ -9,6 +9,7 @@ import ex7_solver_gauss_seidel_method_cython as gs
 import ex8_solver_backward_gauss_seidel_method_cython as bgs
 import ex9_solver_symmetric_gauss_seidel_method_cython as sgs
 import ex12_solver_GMRES as gmres
+import ex13_solver_repeated_GMRES as rgmres
 
 def direct_solve(N,h,epsilon = 1):
     A = A_matrix(N,h,epsilon)
@@ -40,17 +41,17 @@ def f_N(N):
 def u_ex(x, epsilon):
     return (np.exp(x/epsilon) - np.exp(1/epsilon))/(1 - np.exp(1/epsilon))
 
-def plot_scaled_residual(A, f, N, TOL, iter_method):
+def plot_scaled_residual(iter_method, *args):
     """
     Plots the scaled residual for the given iteration method.
     """
     # Solve the linear system.
-    u, rs, k = iter_method(A, f, TOL)
+    u, rs, k = iter_method(*args)
 
     # Plot the scaled residual.
     plt.figure()
     plt.plot(range(k), rs)
-    plt.title(f"Plot of the scaled residual for the {iter_method.__name__} for N  = {N}.")
+    plt.title(f"Plot of the scaled residual for the {iter_method.__name__} for N  = {len(u)-1}.")
     plt.xlabel('Iteration')
     plt.ylabel('Scaled Residual')
     plt.yscale('log')
@@ -61,7 +62,7 @@ def plot_scaled_residual(A, f, N, TOL, iter_method):
     return redf
 
 if __name__ == "__main__":
-    N = 2**9
+    N = 2**7
     h = 1/N
     epsilon = 0.1
 
@@ -81,8 +82,10 @@ if __name__ == "__main__":
     time3 = time()
     u4, _, k4 = sgs.symmetric_gauss_seidel_iteration_method(A,f,TOL, tridiagonal=True)
     time4 = time()
-    u5, _, k5 = gmres.GMRES_method(A,f,u_0,TOL, tridiagonal=False)
+    u5, _, k5 = gmres.GMRES_method(A,f,u_0,TOL)
     time5 = time()
+    u6, _, k6 = rgmres.repeated_GMRES_method(A,f,u_0,TOL,10)
+    time6 = time()
 
     x = np.linspace(0,1,N+1)
     u_ref = u_ex(x, epsilon)
@@ -92,7 +95,10 @@ if __name__ == "__main__":
     plt.plot(x, u3, label=f"backward Gauss-Seidel ({k3} iterations, {time3-time2:.2f}s)")
     plt.plot(x, u4, label=f"symmetric Gauss-Seidel ({k4} iterations, {time4-time3:.2f}s)")
     plt.plot(x, u5, label=f"GMRES ({k5} iterations, {time5-time4:.2f}s)")
+    plt.plot(x, u6, label=f"repeated GMRES(10) ({k6} iterations, {time6-time5:.2f}s)")
     plt.plot(x, u_ref, label="reference solution")
 
     plt.legend()
     plt.show()
+
+    plot_scaled_residual(rgmres.repeated_GMRES_method, A,f,u_0,TOL, 10)
