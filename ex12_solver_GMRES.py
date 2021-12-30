@@ -1,17 +1,8 @@
-from main import A_matrix, f_N
 import numpy as np
 import scipy.sparse.linalg as spla
 
-N=10
-h=1/N
-epsilon = 0.5
 
-A = A_matrix(N,h,epsilon)
-f = f_N(N)
-
-u_0 = np.zeros(f.shape)
-
-def GMRES_method(A, f, u_0, TOL, maxiter=1e10):
+def GMRES_method(A, f, TOL, u_0, maxiter=int(1e4)):
     len_f = f.shape[0]
 
     r_0 = f - np.matmul(A,u_0)
@@ -25,6 +16,7 @@ def GMRES_method(A, f, u_0, TOL, maxiter=1e10):
 
     j=0
     res = TOL+1
+    sr = []
 
     H = np.zeros((maxiter+1,maxiter))       # Hessenberg matrix
     
@@ -45,20 +37,20 @@ def GMRES_method(A, f, u_0, TOL, maxiter=1e10):
 
         # print(f"iteration: {j}, u_new: {u_new}")
 
-        if H[j+1,j] == 0:
-            print("H = 0")
-            break
-        
         r_new = f-np.matmul(A,u_new)
         res = np.linalg.norm(r_new)/np.linalg.norm(f)
-        
+        sr.append(res)
         j+=1
-    return u_new, j
+
+        if H[j+1,j] == 0:
+            break
+        
+    return u_new, sr, j
 
 if __name__ == "__main__":
     M = np.array([[1,1],[3,-4]])
     b = np.array([3,2])
     u_0 = np.array([1,2])
     print(np.linalg.solve(M,b))
-    print(GMRES_method(M,b,u_0,1e-8,100))
+    print(GMRES_method(M,b,1e-8,u_0,100))
     print(spla.gmres(M,b,u_0))
