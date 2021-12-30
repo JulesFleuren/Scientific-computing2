@@ -29,7 +29,7 @@ def GMRES_method(A, f, u_0, TOL):
 
     H = np.zeros((maxiter+1,maxiter))       # Hessenberg matrix
     
-    while res > TOL and j < maxiter-1:
+    while res > TOL and j < maxiter:
         
         v_new = np.matmul(A_new,V[:,j])
         for i in range(j+1):
@@ -41,7 +41,7 @@ def GMRES_method(A, f, u_0, TOL):
             v_new = v_new/H[j+1,j]
         V[:,j+1] = v_new
         
-        y_new = np.linalg.lstsq(H[:j+2,:j+1], beta[:j+2])[0]
+        y_new = np.linalg.lstsq(H[:j+2,:j+1], beta[:j+2], rcond=None)[0]
         u_new = u_0 + np.matmul(V[:,:j+1],y_new)
 
         # print(f"iteration: {j}, u_new: {u_new}")
