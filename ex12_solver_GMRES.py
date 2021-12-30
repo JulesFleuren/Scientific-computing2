@@ -1,18 +1,20 @@
-# from main import A_matrix, f_N
 import numpy as np
-import scipy.sparse as spsp
+import scipy.sparse.linalg as spla
 
 
-def GMRES_method(A, f, u_0, TOL, tridiagonal=False):
+
+def GMRES_method(A, f, u_0, TOL):
+    
     len_f = f.shape[0]
     maxiter = len_f+1
 
-    if tridiagonal:
-        A = spsp.diags((A.diagonal(-1), A.diagonal(0), A.diagonal(1)), (-1,0,1))
-        r_0 = f - A.dot(u_0)
-    else:
-        r_0 = f - np.matmul(A,u_0)
+    # preconditioning
+    D_inv = np.diag(1/np.diag(A))
+    # D_inv = np.diag(np.ones(len_f))
+    A_new = np.matmul(D_inv, A)
+    f_new = np.matmul(D_inv, f)
 
+    r_0 = f_new - np.matmul(A_new,u_0)
 
     v_0 = r_0/ np.linalg.norm(r_0)
     V = np.zeros((len_f, maxiter))
@@ -28,10 +30,8 @@ def GMRES_method(A, f, u_0, TOL, tridiagonal=False):
     H = np.zeros((maxiter+1,maxiter))       # Hessenberg matrix
     
     while res > TOL and j < maxiter-1:
-        if tridiagonal:
-            v_new = A.dot(V[:,j])
-        else:
-            v_new = np.matmul(A,V[:,j])
+        
+        v_new = np.matmul(A_new,V[:,j])
         for i in range(j+1):
             H[i,j] = np.dot(v_new, V[:,i])
             v_new = v_new - H[i,j]*V[:,i]
@@ -46,11 +46,9 @@ def GMRES_method(A, f, u_0, TOL, tridiagonal=False):
 
         # print(f"iteration: {j}, u_new: {u_new}")
 
-        if tridiagonal:
-            r_new = f-A.dot(u_new)
-        else:
-            r_new = f-np.matmul(A,u_new)
-        res = np.linalg.norm(r_new)/np.linalg.norm(f)
+        
+        r_new = f_new-np.matmul(A_new,u_new)
+        res = np.linalg.norm(r_new)/np.linalg.norm(f_new)
         sr.append(res)
         
         if H[j+1,j] == 0:
@@ -62,6 +60,7 @@ def GMRES_method(A, f, u_0, TOL, tridiagonal=False):
     if j == maxiter:
         raise RuntimeError("max iterations reached without converging")
 
+
     return u_new, sr, j
 
 if __name__ == "__main__":
@@ -70,4 +69,4 @@ if __name__ == "__main__":
     u_0 = np.array([1,2])
     print(np.linalg.solve(M,b))
     print(GMRES_method(M,b,u_0,1e-8))
-    print(spsp.linalg.gmres(M,b,u_0))
+    print(spla.gmres(M,b,u_0))
