@@ -25,7 +25,7 @@ def GMRES_method(A, f, u_0, TOL):
 
     j=0
     res = TOL+1
-    sr = []
+    sr = np.zeros(maxiter)
 
     H = np.zeros((maxiter+1,maxiter))       # Hessenberg matrix
     
@@ -49,7 +49,7 @@ def GMRES_method(A, f, u_0, TOL):
         
         r_new = f_new-np.matmul(A_new,u_new)
         res = np.linalg.norm(r_new)/np.linalg.norm(f_new)
-        sr.append(res)
+        sr[j] = res
         
         if H[j+1,j] == 0:
             j+=1
@@ -61,7 +61,7 @@ def GMRES_method(A, f, u_0, TOL):
         raise RuntimeError("max iterations reached without converging")
 
 
-    return u_new, sr, j
+    return u_new, sr[:j], j
 
 if __name__ == "__main__":
     M = np.array([[1,1],[3,-4]])
