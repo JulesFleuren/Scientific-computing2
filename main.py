@@ -41,12 +41,12 @@ def f_N(N):
 def u_ex(x, epsilon):
     return (np.exp(x/epsilon) - np.exp(1/epsilon))/(1 - np.exp(1/epsilon))
 
-def plot_scaled_residual(iter_method, *args):
+def plot_scaled_residual(iter_method, *args, **kwargs):
     """
     Plots the scaled residual for the given iteration method.
     """
     # Solve the linear system.
-    u, rs, k = iter_method(*args)
+    u, rs, k = iter_method(*args, **kwargs)
 
     # Plot the scaled residual.
     plt.figure()
@@ -61,44 +61,64 @@ def plot_scaled_residual(iter_method, *args):
     redf = [rs[-i]/rs[-i-1] for i in range(1,6)]
     return redf
 
+def plot_graph_and_scaled_residual(iter_method, x, ax_graph, ax_residual, *args, **kwargs):
+    """
+    Plots the scaled residual for the given iteration method.
+    """
+    # Solve the linear system.
+    time0 = time()
+    u, rs, k = iter_method(*args, **kwargs)
+    time1 = time()
+
+    ax_graph.plot(x, u, label=f"{iter_method.__name__} ({k} iterations, {time1-time0:.2f}s)")
+
+    # Plot the scaled residual.
+    ax_residual.plot(range(k), rs, label=f"{iter_method.__name__}")
+
+    
 if __name__ == "__main__":
-    N = 2**7
+    
+    fig1, ax1 = plt.subplots()
+    fig2, ax2 = plt.subplots()
+    fig3, ax3 = plt.subplots()
+    
+    N = 2**8
     h = 1/N
     epsilon = 0.1
-
 
     A = A_matrix(N, h, epsilon)
     f = f_N(N)
 
     u_0 = np.zeros(f.shape)
-
     TOL = 1e-6
-    time0 = time()
-    u1, _, k1 = jac.jacobi_iteration_method(A,f,TOL, tridiagonal=True)
-    time1 = time()
-    u2, _, k2 = gs.gauss_seidel_iteration_method(A,f,TOL, tridiagonal=True)
-    time2 = time()
-    u3, _, k3 = bgs.backward_gauss_seidel_iteration_method(A,f,TOL, tridiagonal=True)
-    time3 = time()
-    u4, _, k4 = sgs.symmetric_gauss_seidel_iteration_method(A,f,TOL, tridiagonal=True)
-    time4 = time()
-    u5, _, k5 = gmres.GMRES_method(A,f,u_0,TOL)
-    time5 = time()
-    u6, _, k6 = rgmres.repeated_GMRES_method(A,f,u_0,TOL,10)
-    time6 = time()
 
     x = np.linspace(0,1,N+1)
     u_ref = u_ex(x, epsilon)
 
-    plt.plot(x, u1, label=f"Jacobi ({k1} iterations, {time1-time0:.2f}s)")
-    plt.plot(x, u2, label=f"forward Gauss-Seidel ({k2} iterations, {time2-time1:.2f}s)")
-    plt.plot(x, u3, label=f"backward Gauss-Seidel ({k3} iterations, {time3-time2:.2f}s)")
-    plt.plot(x, u4, label=f"symmetric Gauss-Seidel ({k4} iterations, {time4-time3:.2f}s)")
-    plt.plot(x, u5, label=f"GMRES ({k5} iterations, {time5-time4:.2f}s)")
-    plt.plot(x, u6, label=f"repeated GMRES(10) ({k6} iterations, {time6-time5:.2f}s)")
-    plt.plot(x, u_ref, label="reference solution")
+    ax1.plot(x, u_ref, label="reference solution")
 
-    plt.legend()
+    plot_graph_and_scaled_residual(jac.jacobi_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
+    plot_graph_and_scaled_residual(gs.gauss_seidel_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
+    plot_graph_and_scaled_residual(bgs.backward_gauss_seidel_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
+    plot_graph_and_scaled_residual(sgs.symmetric_gauss_seidel_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
+    plot_graph_and_scaled_residual(gmres.GMRES_method, x, ax1, ax3, A, f, u_0, TOL)
+    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A,f,u_0,TOL, 10)
+    
+    ax1.set_title(f"plot of solutions for N={N}")
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('u')
+    ax1.legend()
+
+    ax2.set_title(f"Plot of the scaled residual for N  = {N}.")
+    ax2.set_xlabel('Iteration')
+    ax2.set_ylabel('Scaled Residual')
+    ax2.set_yscale('log')
+    ax2.legend()
+
+    ax3.set_title(f"Plot of the scaled residual for N  = {N}.")
+    ax3.set_xlabel('Iteration')
+    ax3.set_ylabel('Scaled Residual')
+    ax3.set_yscale('log')
+    ax3.legend()
+
     plt.show()
-
-    plot_scaled_residual(rgmres.repeated_GMRES_method, A,f,u_0,TOL, 10)
