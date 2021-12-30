@@ -11,42 +11,47 @@ f = f_N(N)
 
 u_0 = np.zeros(f.shape)
 
-def GMRES_method(A, f, u_0, TOL, maxiter):
+def GMRES_method(A, f, u_0, TOL, maxiter=1e10):
     len_f = f.shape[0]
 
     r_0 = f - np.matmul(A,u_0)
 
     v_1 = r_0/ np.linalg.norm(r_0)
     V = np.zeros((len_f, maxiter))
-    V[:,0] = v_1
+    V[:,0] = v_1        # matrix met alle v's als kolommen. v vectors zijn basis voor de Krylov space, die gevonden worden met Arnoldi's method
+
+    beta = np.zeros(maxiter)        # beta e_1 vector 
+    beta[0] = np.linalg.norm(r_0)
 
     j=0
     res = TOL+1
 
     H = np.zeros((maxiter+1,maxiter))       # Hessenberg matrix
     
-    # arnoldi method
     while res > TOL and j < maxiter:
-        v_new = np.matmul(A,V[:,j])
         
+        v_new = np.matmul(A,V[:,j])
         for i in range(j):
             H[i,j] = np.dot(v_new, V[:,i])
             v_new = v_new - H[i,j]*V[:,i]
         H[j+1,j] = np.linalg.norm(v_new)
-
+        
         if H[j+1,j] != 0:
-            v_new = v_new/H[j+1,j]      # v vectors zijn basis voor de Krylov space
+            v_new = v_new/H[j+1,j]
         V[:,j+1] = v_new
-        beta = np.zeros(j+1)
-        beta[0] = np.linalg.norm(r_0)
-        y_new = np.linalg.lstsq(H[:j+1,:j], beta)[0]
+        
+        y_new = np.linalg.lstsq(H[:j+1,:j], beta[:j+1])[0]
         u_new = u_0 + np.matmul(V[:,:j],y_new)
-        print(f"iteration: {j}, u_new: {u_new}")
+
+        # print(f"iteration: {j}, u_new: {u_new}")
+
         if H[j+1,j] == 0:
             print("H = 0")
             break
+        
         r_new = f-np.matmul(A,u_new)
         res = np.linalg.norm(r_new)/np.linalg.norm(f)
+        
         j+=1
     return u_new, j
 
