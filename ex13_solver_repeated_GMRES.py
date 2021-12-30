@@ -5,7 +5,7 @@ from ex12_solver_GMRES import GMRES_method
 
 
 
-def GMRES_method_non_full(A, f, u_0, TOL, iterations):
+def GMRES_method_non_full(A, f, u_0, TOL, iterations=10):
     
     len_f = f.shape[0]
     iterations = len_f+1

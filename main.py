@@ -73,8 +73,13 @@ def plot_graph_and_scaled_residual(iter_method, x, ax_graph, ax_residual, *args,
     ax_graph.plot(x, u, label=f"{iter_method.__name__} ({k} iterations, {time1-time0:.2f}s)")
 
     # Plot the scaled residual.
-    ax_residual.plot(range(k), rs, label=f"{iter_method.__name__}")
+    if "iterations" in kwargs:
+        m = int(kwargs.get("iterations"))
+        label = f"{iter_method.__name__}, m={m}"
+    else:
+        label=f"{iter_method.__name__}"
 
+    ax_residual.plot(range(k), rs, label=label)
     
 if __name__ == "__main__":
     
@@ -102,7 +107,9 @@ if __name__ == "__main__":
     plot_graph_and_scaled_residual(bgs.backward_gauss_seidel_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
     plot_graph_and_scaled_residual(sgs.symmetric_gauss_seidel_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
     plot_graph_and_scaled_residual(gmres.GMRES_method, x, ax1, ax3, A, f, u_0, TOL)
-    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A,f,u_0,TOL, 10)
+    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A,f,u_0,TOL, iterations=5)
+    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A,f,u_0,TOL, iterations=10)
+    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A,f,u_0,TOL, iterations=50)
     
     ax1.set_title(f"plot of solutions for N={N}")
     ax1.set_xlabel('x')
