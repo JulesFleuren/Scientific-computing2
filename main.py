@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy as sp
 
 from time import time
 
@@ -7,6 +8,7 @@ import ex6_solver_jacobi_method_cython as jac
 import ex7_solver_gauss_seidel_method_cython as gs
 import ex8_solver_backward_gauss_seidel_method_cython as bgs
 import ex9_solver_symmetric_gauss_seidel_method_cython as sgs
+import ex12_solver_GMRES as gmres
 
 def direct_solve(N,h,epsilon = 1):
     A = A_matrix(N,h,epsilon)
@@ -59,12 +61,16 @@ def plot_scaled_residual(A, f, N, TOL, iter_method):
     return redf
 
 if __name__ == "__main__":
-    N = 2**8
+    N = 2**9
     h = 1/N
     epsilon = 0.1
 
+
     A = A_matrix(N, h, epsilon)
     f = f_N(N)
+
+    u_0 = np.zeros(f.shape)
+
     TOL = 1e-6
     time0 = time()
     u1, _, k1 = jac.jacobi_iteration_method(A,f,TOL, tridiagonal=True)
@@ -75,6 +81,8 @@ if __name__ == "__main__":
     time3 = time()
     u4, _, k4 = sgs.symmetric_gauss_seidel_iteration_method(A,f,TOL, tridiagonal=True)
     time4 = time()
+    u5, _, k5 = gmres.GMRES_method(A,f,u_0,TOL, tridiagonal=False)
+    time5 = time()
 
     x = np.linspace(0,1,N+1)
     u_ref = u_ex(x, epsilon)
@@ -83,6 +91,7 @@ if __name__ == "__main__":
     plt.plot(x, u2, label=f"forward Gauss-Seidel ({k2} iterations, {time2-time1:.2f}s)")
     plt.plot(x, u3, label=f"backward Gauss-Seidel ({k3} iterations, {time3-time2:.2f}s)")
     plt.plot(x, u4, label=f"symmetric Gauss-Seidel ({k4} iterations, {time4-time3:.2f}s)")
+    plt.plot(x, u5, label=f"GMRES ({k5} iterations, {time5-time4:.2f}s)")
     plt.plot(x, u_ref, label="reference solution")
 
     plt.legend()
