@@ -53,9 +53,21 @@ def A_matrix(N,h, epsilon):
     return A
 
 def f_N(N):
-    # TODO: boundary conditions
+    # TODO: check corner boundary conditions
     f = np.ones((N+1)**2)
-    # f[0] = 1
+    
+    # RHS for x = 0
+    f[0:N+1] += 1
+    # RHS for x = N+1
+    f[N*(N+1):] += 1
+
+    for k in range(0, N+1):
+        # RHS for y = 0
+        f[k*(N+1)] += 1
+
+        # RHS for y = N+1
+        f[k*(N+1)+N] += 1
+
     return f
 
 def jacobi_eigenvalues(N, h, epsilon):
@@ -70,7 +82,11 @@ def jacobi_eigenvalues(N, h, epsilon):
 N=2
 h=1/N
 epsilon = 0.5
+
 # print(A_matrix(N,h,epsilon))
+# print(f_N(2))
+# print(f_N(3))
+
 w = jacobi_eigenvalues(N, h, epsilon)
 
 plt.scatter(np.arange(len(w)), np.sort(w)[::-1])
