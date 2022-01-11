@@ -42,13 +42,13 @@ def A_matrix(N,h, epsilon):
     ## Diffusion term (ddu/dyy)
     
     # Diagonal u(x,y) = 2
-    A += np.diagflat([2]*dim)
+    A += np.diagflat([2/h**2]*dim)
 
     # Off-diagonal (bottom) u(x,y - 1) = -1
-    A += np.diagflat([-1]*(dim - (N+1)), k=-(N+1))
+    A += np.diagflat([-1/h**2]*(dim - (N+1)), k=-(N+1))
 
     # Off-diagonal (top) u(x,y + 1) = -1
-    A += np.diagflat([-1]*(dim - (N+1)), k=(N+1))
+    A += np.diagflat([-1/h**2]*(dim - (N+1)), k=(N+1))
 
     return A
 
@@ -83,7 +83,7 @@ N=2
 h=1/N
 epsilon = 0.5
 
-# print(A_matrix(N,h,epsilon))
+print(A_matrix(N,h,epsilon))
 # print(f_N(2))
 # print(f_N(3))
 
