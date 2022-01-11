@@ -106,10 +106,12 @@ if __name__ == "__main__":
     plot_graph_and_scaled_residual(gs.gauss_seidel_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
     plot_graph_and_scaled_residual(bgs.backward_gauss_seidel_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
     plot_graph_and_scaled_residual(sgs.symmetric_gauss_seidel_iteration_method, x, ax1, ax2, A, f, TOL, tridiagonal=True)
+
     plot_graph_and_scaled_residual(gmres.GMRES_method, x, ax1, ax3, A, f, u_0, TOL)
-    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A,f,u_0,TOL, iterations=5)
-    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A,f,u_0,TOL, iterations=10)
-    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A,f,u_0,TOL, iterations=50)
+    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A, f, u_0, TOL, iterations=2)
+    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A, f, u_0, TOL, iterations=5)
+    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A, f, u_0, TOL, iterations=10)
+    plot_graph_and_scaled_residual(rgmres.repeated_GMRES_method, x, ax1, ax3, A, f, u_0, TOL, iterations=50)
     
     ax1.set_title(f"plot of solutions for N={N}")
     ax1.set_xlabel('x')

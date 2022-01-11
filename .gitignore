@@ -5,3 +5,4 @@ build/
 *cython.html
 *amd64.pyd
 .vscode/
+ex12_solver_GMRES_cython.pyx

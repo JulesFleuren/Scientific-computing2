@@ -78,19 +78,19 @@ def jacobi_eigenvalues(N, h, epsilon):
     w, v = np.linalg.eig(Bjac)
     return w
 
+if __name__ == "__main__":
+    N=3
+    h=1/N
+    epsilon = 0.5
 
-N=2
-h=1/N
-epsilon = 0.5
+    print(A_matrix(N,h,epsilon))
+    # print(f_N(2))
+    # print(f_N(3))
 
-# print(A_matrix(N,h,epsilon))
-# print(f_N(2))
-# print(f_N(3))
+    w = jacobi_eigenvalues(N, h, epsilon)
 
-w = jacobi_eigenvalues(N, h, epsilon)
+    plt.scatter(np.arange(len(w)), np.sort(w)[::-1])
 
-plt.scatter(np.arange(len(w)), np.sort(w)[::-1])
+    plt.show()
 
-plt.show()
-
-print(w)
+    print(w)
