@@ -21,19 +21,8 @@ for N in Ns:
     h = 1/N
     w = jacobi_eigenvalues(N, h)
     w = np.sort(w)[::-1]
-    min_real = min(w.real)
-    max_real = max(w.real)
-    center_real = (min_real + max_real)/2
-    radius_real = round(max_real - center_real, 2)
 
-    min_imag = min(w.imag)
-    max_imag = max(w.imag)
-    center_imag = (min_imag + max_imag)/2
-    radius_imag = round(max_imag - center_imag, 2)
-
-    origin = complex(round(center_real, 1), round(center_imag, 1))
-
-    plt.scatter(w.real, w.imag, label=r"$N={N}, a={radius_real}, b={radius_imag}, O={origin}$".format(N=N,radius_real=radius_real, radius_imag=radius_imag, origin=origin))
+    plt.scatter(np.arange(len(w)), np.sort(w)[::-1], label=r"$N={N}$".format(N=N))
 # plt.subplots_adjust(bottom=0.4)
 plt.legend()
 plt.title(f"Eigenvalues of the 2D problem for various values of N")

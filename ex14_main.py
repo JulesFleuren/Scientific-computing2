@@ -1,6 +1,6 @@
 import numpy as np
 
-def A_matrix(N,h, epsilon):
+def A_matrix(N,h):
     dim = (N-1)**2
     A = np.zeros((dim,dim))
 
