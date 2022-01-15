@@ -15,7 +15,7 @@ def compute_spectral_radius(w):
 
 
 print("epsilon", "N", "spectral radius", sep = '\t')
-for epsilon in [0.5, 0.1, 0.01]:
+for epsilon in [1, 0.5, 0.1, 0.01, 0.001]:
     for N in [2**n for n in range(3,10)]:
         h = 1/N
         Bjac = jacobi_eigenvalues(N, h, epsilon)
