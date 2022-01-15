@@ -8,24 +8,24 @@ from ex12_solver_GMRES import GMRES_method
 def GMRES_method_non_full(A, f, u_0, TOL, iterations=10):
     
     len_f = f.shape[0]
-    iterations = len_f+1
+    maxiter = len_f+1
 
     r_0 = f - np.matmul(A,u_0)
 
     v_0 = r_0/ np.linalg.norm(r_0)
-    V = np.zeros((len_f, iterations))
+    V = np.zeros((len_f, iterations+1))
     V[:,0] = v_0        # matrix met alle v's als kolommen. v vectors zijn basis voor de Krylov space, die gevonden worden met Arnoldi's method
 
-    beta = np.zeros(iterations)        # beta e_1 vector 
+    beta = np.zeros(iterations+1)        # beta e_1 vector 
     beta[0] = np.linalg.norm(r_0)
 
     j=0
     res = TOL+1
-    sr = np.zeros(iterations)
+    sr = np.zeros(iterations+1)
 
     H = np.zeros((iterations+1,iterations))       # Hessenberg matrix
     
-    while res > TOL and j < iterations:
+    while res > TOL and j < maxiter and j < iterations:
         
         v_new = np.matmul(A,V[:,j])
         for i in range(j+1):
