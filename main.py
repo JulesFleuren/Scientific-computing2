@@ -109,7 +109,7 @@ if __name__ == "__main__":
     u_0 = np.zeros(f.shape)
     TOL = 1e-6
 
-    x = np.linspace(0,1,N+1)
+    x = np.linspace(0,1,N-1)
     u_ref = u_ex(x, epsilon)
 
     ax1.plot(x, u_ref, label="reference solution")
