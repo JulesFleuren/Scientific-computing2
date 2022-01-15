@@ -33,9 +33,21 @@ def A_matrix(N,h,epsilon):
     A[-1,-2] = 0
     return A
 
+def A_hat_matrix(N,h,epsilon):
+    A = np.zeros((N-1,N-1))
+    np.fill_diagonal(A, (2*epsilon + h)/h**2)
+    A += np.diag(np.full(N,-epsilon/h**2),1)
+    A += np.diag(np.full(N,(-epsilon-h)/h**2),-1)
+    return A
+
 def f_N(N):
     f = np.zeros(N+1)
     f[0] = 1
+    return f
+
+def f_hat_N(N,h,epsilon):
+    f = np.zeros(N-1)
+    f[0] = (epsilon + h)/h**2
     return f
 
 def u_ex(x, epsilon):
