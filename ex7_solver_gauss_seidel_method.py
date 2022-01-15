@@ -2,7 +2,7 @@ import numpy as np
 
 from matplotlib import pyplot as plt
 
-from main import A_matrix, f_N, plot_scaled_residual
+from main import A_hat_matrix, f_hat_N, plot_scaled_residual
 
 
 def single_step_gauss_seidel(A,f,u):
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     for k in range(len(Ns)):
         N = Ns[k]
         h=1/N
-        redk = plot_scaled_residual(A_matrix(N, h, epsilon), f_N(N), N, TOL, gauss_seidel_iteration_method)
+        redk = plot_scaled_residual(A_hat_matrix(N, h, epsilon), f_hat_N(N, h, epsilon), N, TOL, gauss_seidel_iteration_method)
         red[k] = redk
 
     print(red)

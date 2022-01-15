@@ -1,16 +1,16 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from main import A_matrix
+from main import A_hat_matrix
 
 
 N=20
 h=1/N
 epsilon = 1
-w1, v = np.linalg.eig(A_matrix(N,h,epsilon))
+w1, v = np.linalg.eig(A_hat_matrix(N,h,epsilon))
 epsilon = 0.5
-w2, v = np.linalg.eig(A_matrix(N,h,epsilon))
+w2, v = np.linalg.eig(A_hat_matrix(N,h,epsilon))
 epsilon = 0.1
-w3, v = np.linalg.eig(A_matrix(N,h,epsilon))
+w3, v = np.linalg.eig(A_hat_matrix(N,h,epsilon))
 print(np.iscomplex(w1).any())
 print(np.iscomplex(w2).any())
 print(np.iscomplex(w3).any())
