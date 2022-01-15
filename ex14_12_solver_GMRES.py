@@ -64,8 +64,8 @@ def GMRES_method(A, f, u_0, TOL):
     return u_new, sr[:j], j
 
 if __name__ == "__main__":
-    N=13
+    N=64
     h=1/N
     epsilon = 0.5
 
-    print(GMRES_method(A_matrix(N, h, epsilon), f_N(N), f_N(N), 1e-6))
+    print(GMRES_method(A_matrix(N, h), f_N(N), f_N(N), 1e-6))

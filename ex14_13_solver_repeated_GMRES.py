@@ -76,9 +76,9 @@ def repeated_GMRES_method(A, f, u_0, TOL, iterations):
     return u_new, sr, j
 
 if __name__ == "__main__":
-    N=13
+    N=64
     h=1/N
-    epsilon = 0.5
-    iterations = 13
+    epsilon = 0.001
+    iterations = 50
 
     print(repeated_GMRES_method(A_matrix(N, h, epsilon), f_N(N), f_N(N), 1e-6, iterations))
